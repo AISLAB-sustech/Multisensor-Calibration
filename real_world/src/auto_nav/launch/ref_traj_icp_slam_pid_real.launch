@@ -1,0 +1,53 @@
+<launch>
+    <!--  ************** Global Parameters ***************  -->
+    <param name="use_sim_time" value="false"/>
+    <param name="tf_prefix" value=""/>
+    <arg name="controller"  default="pid" doc="opt: dwa, mpc, pure_pursuit pid"/> 
+    <arg name="gui" default="false"/>
+    
+
+    <!--  ************** Robot Model ***************  -->
+    <include file="$(find auto_nav)/launch/robot_state_publisher.launch"/>
+
+    <!--  ************** BSpline Trajectory Generation **************  -->
+
+    <!--  ************** PID Controller **************  -->
+    <include file="$(find auto_nav)/launch/pid_follow_planner.launch"/>
+
+    <!--  ************** Lidar Driver **************  -->
+    <node name="urg_node" pkg="urg_node" type="urg_node" output="screen">
+      <param name="ip_address" value="192.168.1.20"/>
+      <param name="frame_id" value="lidar_link"/>
+      <param name="calibrate_time" value="true"/>
+      <param name="publish_intensity" value="false"/>
+      <param name="publish_multiecho" value="false"/>
+      <param name="angle_min" value="-2.3"/>
+      <param name="angle_max" value="2.3"/>
+      <param name="use_sim_time" value="false"/>
+    </node>
+
+    <!--  ************** ICP SLAM **************  -->
+    <include file="$(find laser_scan_matcher)/launch/laser_scan_matcher.launch"/>
+
+    <!--  ************** Turtlebot Port **************  -->
+    <include file="$(find auto_nav)/launch/turtlebot.launch"/>
+
+    <!--  ************** Microphone Driver **************  -->
+    <node pkg="xf_mic_online" type="talker_cpp" name="mic_online_switch" output="screen">
+    </node>
+
+    <!--  ************** EKF ******************** -->
+    <node pkg="sensor_calibration" type="sensor_calibration_src.py" name="sensor_calibration" output="screen">
+    </node>
+
+    <!--  ************** Visualisation **************  -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find auto_nav)/rviz/rviz_navigation.rviz"/>
+
+    <!--  ************** TF **************  -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="odom_static_transform_publisher" args="0 0 0 0 0 0 odom lidar_odom" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_static_transform_publisher" args="0 0 0 0 0 0 base_footprint base_link" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="map_odom_static_transform_publisher" args="0 0 0 0 0 0 map odom" />
+
+    <!--  ************** Bag Recording **************  -->
+    <node name="rosbag_record" pkg="rosbag" type="record" args="-o $(find auto_nav)/bag/ /scan /pose2D /odom /switch /master/mic/pcm/deno /src_pos2 /tf /full_path"/>
+</launch>

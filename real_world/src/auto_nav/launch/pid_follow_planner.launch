@@ -1,0 +1,18 @@
+<launch>
+    <node pkg="auto_nav" type="pid_position_follow" name="pid_position_follow" respawn="true" output="screen" >
+        <param name="global_frame" value="odom"/>
+        <param name="plan_frequency" value="30"/>
+        <param name="max_x_speed" value="0.20"/>
+        <param name="max_y_speed" value="0.0"/>
+        <param name="set_yaw_speed" value="0.13"/>
+        <param name="goal_dist_tolerance" value="0.04"/>
+        <param name="prune_ahead_distance" value="0.04"/>
+        <param name="p_x_value" value="2.0"/>
+        <param name="i_x_value" value="0.0"/>
+        <param name="d_x_value" value="1.0"/>
+        <param name="p_yaw_value" value="4.0"/>
+        <param name="i_yaw_value" value="0.0"/>
+        <param name="d_yaw_value" value="1.0"/>
+        <remap from="/base_vel" to="/cmd_vel" />
+    </node>
+</launch>

@@ -1,0 +1,13 @@
+# config.yaml
+ground true:
+  mic_pos_theta: [0.3,0.1,60]  # meter, meter, degree
+  lidar_pos_theta: [0.4,0.2,30]
+
+
+settings:
+  sound_source: [0,3.6]          # meter
+  mic_noise: 2                   # degree
+  lidar_pos_noise:   0.005       # meter
+  lidar_theta_noise: 0.5         # degree
+  wheel_noise:      2            # percent
+  show_calibration_figure:  false
